@@ -1,19 +1,17 @@
 #!/bin/bash
 
-#SBATCH --job-name=test
-#SBATCH --output=/cfs/earth/scratch/ulzg/Cpp/txtout/result.%j.%N.out
-#SBATCH --chdir=/cfs/earth/scratch/ulzg/Cpp
+#SBATCH --job-name=hmc_1
+#SBATCH --output=/cfs/earth/scratch/ulzg/hmc_sip_norain/txtout/result.%j.%N.out
+#SBATCH --chdir=/cfs/earth/scratch/ulzg/hmc_sip_norain
 #
 #SBATCH --nodes=1
 #SBATCH --ntasks=1
 #SBATCH --cpus-per-task=1
-#SBATCH --time=14:00:00
-#SBATCH --partition=single 
-#SBATCH --qos=single
+#SBATCH --time=08:00:00
+#SBATCH --partition=earth-3 
 #SBATCH --no-requeue
-#SBATCH --constraint=skylake-sp
 #
 
-module load slurm
+# module load slurm
 
-srun ./Test4Cluster > ./output/test.out
+./exec_hmc_sip > ./txtout/hmc_production_no_rain_1.out

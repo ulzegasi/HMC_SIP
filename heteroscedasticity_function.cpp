@@ -15,6 +15,7 @@ double g(double y){
     return out;
 }
 //// **********************************************************************
+//// Heteroscedasticity function to be used in the adept framework for derivatives calculations
 adouble ag(adouble y){
     adouble out = beta * log( sinh( (alpha+y)/beta ) );
     return out;

@@ -1,4 +1,6 @@
 //
+// MD integration routine
+//
 // Created by Simone Ulzega on 10.06.21.
 //
 
@@ -26,15 +28,6 @@ void napa(int nx, int ny, int jx, int jy, int N, int n_params,
 
     clock_t t_derivative_calc;
 
-    /*cout << "**************************" << endl;
-    cout << "Entering NAPA" << endl;
-    if (any_of(u.begin(), u.end(), [](double el){return isnan(el);}) )
-        cout << "u has nan" << endl;
-    else {cout << "u has no nan" << endl;};
-    if (any_of(theta.begin(), theta.end(), [](double el){return isnan(el);}) )
-        cout << "theta has nan" << endl;
-    else {cout << "theta has no nan" << endl;};*/
-
     //// Fast outer propagator (V_N), step dtau/2
     double w_stg;
     double u_old, p_old;
@@ -48,23 +41,11 @@ void napa(int nx, int ny, int jx, int jy, int N, int n_params,
         }
     }
 
-    /*cout << "Done fast propagation" << endl;
-    if (any_of(u.begin(), u.end(), [](double el){return isnan(el);}) )
-        cout << "u has nan" << endl;
-    else {cout << "u has no nan" << endl;};
-    if (any_of(theta.begin(), theta.end(), [](double el){return isnan(el);}) )
-        cout << "theta has nan" << endl;
-    else {cout << "theta has no nan" << endl;};*/
-
     //// Slow inner propagator (V_n, V_1), step dtau
     t_derivative_calc = clock();
     dV_fun(stack, nx, ny, jx, jy, dt, x0, y, mu_thetas, sigma_thetas, theta, u, x, force_old, non_zeros_event1, zeros_event1);
     t_derivatives_tot[0] += 1;
     t_derivatives_tot[1] += ((float)(clock()-t_derivative_calc)/CLOCKS_PER_SEC);
-
-    /*cout << "*******" << endl;
-    cout << "u " << u[0] << " " << u[60] << " " << u[120] << " " << u[1440] << endl;
-    cout << "force " << force_old[8] << " " << force_old[68] << " " << force_old[128] << " " << force_old[1448] << endl;*/
 
     for (int s = 1; s <= (nx+1); ++s)
         u[(s-1)*jx] += dtau * ( p[(s-1)*jx]  + (dtau/2.0) * force_old[n_params+(s-1)*jx] ) / m_bdy;
@@ -78,22 +59,11 @@ void napa(int nx, int ny, int jx, int jy, int N, int n_params,
     t_derivatives_tot[0] += 1;
     t_derivatives_tot[1] += ((float)(clock()-t_derivative_calc)/CLOCKS_PER_SEC);
 
-    /*cout << "u " << u[0] << " " << u[60] << " " << u[120] << " " << u[1440] << endl;
-    cout << "force " << force_new[8] << " " << force_new[68] << " " << force_new[128] << " " << force_new[1448] << endl;
-    cout << "*******" << endl;*/
-
     for (int ix = 0; ix < n_params; ++ix)
         pp[ix] += (dtau/2)*( force_old[ix] + force_new[ix] );
     for (int ix = 0; ix < N; ++ix)
         p[ix] += (dtau/2)*( force_old[n_params + ix] + force_new[n_params + ix] );
 
-    /*cout << "Done slow propagation" << endl;
-    if (any_of(u.begin(), u.end(), [](double el){return isnan(el);}) )
-        cout << "u has nan" << endl;
-    else {cout << "u has no nan" << endl;};
-    if (any_of(theta.begin(), theta.end(), [](double el){return isnan(el);}) )
-        cout << "theta has nan" << endl;
-    else {cout << "theta has no nan" << endl;};*/
 
     //// Again fast outer propagator (V_N), step dtau/2
     for (size_t s = 1; s <= nx; ++s){
@@ -106,16 +76,6 @@ void napa(int nx, int ny, int jx, int jy, int N, int n_params,
         }
     }
 
-    /*cout << "Done second fast propagation" << endl;
-    if (any_of(u.begin(), u.end(), [](double el){return isnan(el);}) )
-        cout << "u has nan" << endl;
-    else {cout << "u has no nan" << endl;};
-    if (any_of(theta.begin(), theta.end(), [](double el){return isnan(el);}) )
-        cout << "theta has nan" << endl;
-    else {cout << "theta has no nan" << endl;};*/
-
-    /*cout << "Exiting NAPA" << endl;
-    cout << "**************************" << endl;*/
 }
 
 //// ***************************************************************** ////
